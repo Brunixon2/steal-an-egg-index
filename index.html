@@ -70,6 +70,11 @@ h3{font-size:18px;font-weight:800;letter-spacing:-.015em;text-align:center;line-
 .r span{color:rgba(255,255,255,.66);font-weight:600;flex:none}
 .r b{font-weight:700;text-align:right;display:flex;align-items:center;gap:7px;justify-content:flex-end;min-width:0}
 .r b em{font-style:normal;overflow:hidden;text-overflow:ellipsis}
+.r.egg{align-items:center}
+.r.egg b{gap:8px;text-align:left}
+.r.egg b em{font-size:12px;line-height:1.25;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:right}
+.e,.efb{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.55),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 4px 10px rgba(0,0,0,.3)}
+.e{object-fit:contain;padding:3px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
 .inc{font-size:15px;font-weight:800;color:#fff;text-shadow:0 0 14px rgba(255,255,255,.45)}
 .g{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.7),rgba(255,255,255,.14));border:1px solid rgba(255,255,255,.65);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 4px 10px rgba(0,0,0,.35)}
 .g img{width:24px;height:24px;object-fit:contain}
@@ -411,7 +416,7 @@ const[name,r,inc,z,egg,ev,file]=l.split("|");
 const f=file||name.replace(/ /g,"-")+".webp";
 const zone=ZONES[z];
 const evn=ev||"";
-pets.push({name,r,ri:ORDER.indexOf(r),inc:num(inc),z:zone,egg:egg||name+" Egg",ev:evn,
+pets.push({name,zk:z,r,ri:ORDER.indexOf(r),inc:num(inc),z:zone,egg:egg||name+" Egg",ev:evn,
 cat:evn===""?"World":(evn==="Limited Shop"||evn==="Halloween Shop")?"Shop":"Event",
 sp:evn===""?zone.s:null,img:IMG+(f.includes("/")?f:dir+"/"+f)});
 });
@@ -424,7 +429,33 @@ $("cat").innerHTML=["All","World","Event","Shop"].map(c=>`<button type="button" 
 $("rar").innerHTML=ORDER.map(k=>`<button type="button" class="chip" data-k="${k}" style="--rgb:${RAR[k][2]}"><i class="dot"></i>${RAR[k][0]}</button>`).join("");
 $("bio").innerHTML=BIOMES.map(b=>`<button type="button" class="chip" data-k="${b}">${b}</button>`).join("");
 $("evt").innerHTML=EVENTS.map(([k,l])=>`<button type="button" class="chip" data-k="${k}">${l}</button>`).join("");
+const EGGO={"World Burner":"2026/09/World-Burner-Egg-e1789399173483.webp","Ghost Reaper":"2026/10/Ghost-Reaper-egg-e1792374572705.webp","Shelltide Voyager":"2026/10/Shelltide-Voyager-egg-e1792489977310.webp","Mimic Chest":"2026/10/Mimic-egg.webp","Voidseer Pumpkin":"2026/10/Voidseer-Pumpking-egg.webp","Shattered Colossus":"2026/09/Shattered-Rift-Egg.webp","Baby Aurora Dragon":"2026/09/Void-Dragon-Egg.webp","Shadow Dragon":"2026/09/Void-Dragon-Egg.webp","Void Dragon":"2026/09/Void-Dragon-Egg.webp","Ember Dragon":"2026/09/Void-Dragon-Egg.webp","Scorched Dragon":"2026/09/Scorched-Dragon-Egg.webp","Drilla":"2026/09/Drilla-Egg.webp","Equinox":"2026/09/Equinox-Egg.webp","Aetheron":"2026/09/Aetheron-Egg.webp","Eye Bat #021":"2026/09/Eye-Bat-egg.webp","Citadel Snail #007":"2026/09/Citadel-Snail-egg.webp","Uncoiled Armadillo":"2026/09/Uncoiled-Armadillo-egg.webp","Mecha Chompa":"2026/10/Mecha-Chompa-egg.webp","Pink Dragon Experiment #010":"2026/09/Pink-Dragon-Experiment-egg.webp","Mecha Scrambler":"2026/09/Mecha-Scrambler-egg.webp","Nibbles #013":"2026/09/Nibbles-013-egg.webp","Experiment #001":"2026/09/Experiment-001-egg.webp","Ghost Fish":null};
+function eggImg(p){
+const n=p.name,sp=n.replace(/ /g,"_"),hy=n.replace(/ /g,"-"),k=p.zk;
+if(n in EGGO)return EGGO[n]?IMG+EGGO[n]:null;
+let f=null;
+if(p.ev===""){
+if(["F","La","De","Ju","Sn","Vo","Ab","Pr","Co"].includes(k))f=`2026/09/${sp}_Egg.png.webp`;
+else if(k==="Ch"||k==="Ti")f=`2026/09/${sp}_Egg.webp`;
+else if(k==="Aa"||k==="Ad")f=`2026/09/${hy}-Egg.webp`;
+else if(k==="En")f=`2026/10/${hy}-egg.webp`;
+}else if(p.ev==="Enchanted Quests")f=`2026/10/${hy}-egg.webp`;
+else if(p.ev==="Halloween Dimension")f=k==="-"?"2026/10/Halloween-Dimension-egg.webp":`2026/10/${hy}-egg.webp`;
+else if(p.ev==="Halloween Shop")f="2026/10/Helloween-egg.webp";
+else if(p.ev==="Dr. Scramble"&&p.egg.startsWith("Lab Egg"))f="2026/09/Experimental-egg.webp";
+else if(p.ev==="Rift Machine"&&p.egg.startsWith("Rift Egg"))f="2026/09/Riftborn-egg.webp";
+else if(p.ev==="Limited Shop"){
+const rr=p.egg.includes("re-roll");
+if(p.egg.startsWith("Extinction"))f=rr?"2026/09/Skeletal-egg.webp":"2026/09/Extinction-egg.webp";
+else if(p.egg.startsWith("Luminous"))f=rr?"2026/09/Luminous-Reroll-Egg.webp":"2026/09/Luminous-Egg-1.webp";
+else if(p.egg.startsWith("Monster"))f=rr?"2026/09/Monster_Eggs.webp":"2026/09/Monster-Egg.webp";
+else if(p.egg.startsWith("Brainrot"))f="2026/09/Brainrot-Egg.webp";
+}
+return f?IMG+f:null;
+}
 function card(p){
+const ei=eggImg(p);
+const eggIcon=ei?`<img class="e" src="${ei}" alt="Egg" loading="lazy" referrerpolicy="no-referrer" data-fb="efb" data-t="🥚">`:`<span class="efb">🥚</span>`;
 const z=p.z;
 const g=z.g?`<i class="g" title="Guardian: ${z.g[0]}"><img src="${IMG+z.g[1]}" alt="${z.g[0]}" loading="lazy" referrerpolicy="no-referrer" data-fb="fb"></i>`:"";
 const biome=z.n==="No biome"?(p.cat==="Shop"?"Premium Shop":"Event reward"):z.n+(z.side?` (${z.side})`:"");
@@ -434,7 +465,7 @@ return `<article class="card" style="--rgb:${RAR[p.r][1]};--edge:${RAR[p.r][2]}"
 <div class="pic"><img src="${p.img}" alt="${p.name}" loading="lazy" referrerpolicy="no-referrer"></div>
 <h3>${p.name}</h3>
 <div class="plate">
-<div class="r"><span>Egg</span><b><em title="${p.egg}">${p.egg}</em></b></div>
+<div class="r egg"><span>Egg</span><b>${eggIcon}<em title="${p.egg}">${p.egg}</em></b></div>
 <div class="r"><span>Avg $/sec</span><b class="inc">${money(p.inc)}</b></div>
 <div class="r"><span>Biome</span><b><em>${biome}</em>${g}</b></div>
 <div class="r"><span>Needs</span><b><em>${p.sp==null?"No speed gate":speedTxt(p.sp)}</em></b></div>
@@ -479,7 +510,7 @@ document.querySelectorAll(".chip.on").forEach(c=>c.classList.remove("on"));
 [...$("cat").children].forEach((x,i)=>x.classList.toggle("on",i===0));
 apply()});
 grid.addEventListener("pointermove",e=>{const c=e.target.closest(".card");if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty("--mx",(e.clientX-r.left)+"px");c.style.setProperty("--my",(e.clientY-r.top)+"px")});
-document.addEventListener("error",e=>{const t=e.target;if(t.tagName!=="IMG")return;const d=document.createElement("span");d.className="fb";d.textContent=(t.alt||"?").trim().charAt(0).toUpperCase();t.replaceWith(d)},true);
+document.addEventListener("error",e=>{const t=e.target;if(t.tagName!=="IMG")return;const d=document.createElement("span");d.className=t.dataset.fb||"fb";d.textContent=t.dataset.t||(t.alt||"?").trim().charAt(0).toUpperCase();t.replaceWith(d)},true);
 apply();
 </script>
 </body>
